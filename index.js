@@ -7,6 +7,7 @@ const addBtn = document.querySelector('form #add-btn');
 const todoInput = document.querySelector('form #todo-item');
 
 const todoListElement = document.querySelector('ul.todo-list');
+const helpElement = document.querySelector('form .field .help');
 
 // incrementer to hold number of items until they are stored in an iterable
 let i = 0;
@@ -30,13 +31,35 @@ clearBtn.addEventListener('click', event => {
   event.preventDefault();
   todoInput.value = '';
 })
+const validateInputs = () => {
+  if (todoInput.value) {
+    todoInput.removeEventListener('keyup', removeValidationErrors);
+    return true;
+  }
+
+  todoInput.classList.add('is-danger');
+  helpElement.classList.add('is-danger');
+  helpElement.innerHTML = 'Task input cannot be blank.';
+
+  todoInput.addEventListener('keyup', removeValidationErrors);
+
+  return false;
+};
+
+const removeValidationErrors = () => {
+  todoInput.classList.remove('is-danger');
+  helpElement.classList.remove('is-danger');
+  helpElement.innerHTML = '';
+}
+
 addBtn.addEventListener('click', event => {
-  // TODO: Prevent adding if todoInput is blank and show error validation
   event.preventDefault();
 
-  createNewListItem(todoInput.value);
-
-  saveTodoItemsToStorage();
+  if (validateInputs()) {
+    createNewListItem(todoInput.value);
+    saveTodoItemsToStorage();
+    todoInput.value = '';
+  }
 });
 
 const createNewListItem = (itemValue, itemId, itemStatus) => {
