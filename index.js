@@ -13,11 +13,21 @@ const helpElement = document.querySelector('form .field .help');
 let i = 0;
 let todoItems;
 
-const populateTodoList = () => {
-  todoItems.forEach((value, key) => {
-    console.log(value);
-    createNewListItem(value.todo, key, value.status);
-  })
+const saveTodoItemsToStorage = () => {
+  console.log('saved');
+  if (todoItems.size > 0) {
+    localStorage.todoItems = JSON.stringify([...todoItems]);
+  }
+};
+
+const getTodoItemsFromStorage = () => {
+  if (localStorage.todoItems) {
+    todoItems = new Map(JSON.parse(localStorage.todoItems));
+    return true;
+  } else {
+    todoItems = new Map();
+  }
+  return false;
 };
 
 window.addEventListener('load', () => {
@@ -26,11 +36,13 @@ window.addEventListener('load', () => {
   }
 });
 
+const populateTodoList = () => {
+  todoItems.forEach((value, key) => {
+    console.log(value);
+    createNewListItem(value.todo, key, value.status);
+  })
+};
 
-clearBtn.addEventListener('click', event => {
-  event.preventDefault();
-  todoInput.value = '';
-})
 const validateInputs = () => {
   if (todoInput.value) {
     todoInput.removeEventListener('keyup', removeValidationErrors);
@@ -52,19 +64,23 @@ const removeValidationErrors = () => {
   helpElement.innerHTML = '';
 }
 
-addBtn.addEventListener('click', event => {
-  event.preventDefault();
-
-  if (validateInputs()) {
-    createNewListItem(todoInput.value);
-    saveTodoItemsToStorage();
-    todoInput.value = '';
+const getNewItemId = (itemId) => {
+  if (itemId) {
+    return itemId;
   }
-});
 
+  // make sure the current list key is not in the Map
+  while (todoItems.has(`list-item-${i}`)) {
+    i++;
+  }
+
+  return `list-item-${i}`;
+};
 const createNewListItem = (itemValue, itemId, itemStatus) => {
   const existingElement = itemStatus === 'complete';
-  itemId = itemId ? itemId : `list-item-${i}`;
+
+  itemId = getNewItemId(itemId);
+  // itemId = itemId ? itemId : `list-item-${i}`;
 
   const newListItem = document.createElement('li');
   newListItem.classList.add('list-item');
@@ -96,15 +112,35 @@ const createNewListItem = (itemValue, itemId, itemStatus) => {
 
       if(listItem.classList.contains('complete')) {
         // item is completed
-        // update map
-        console.log(todoItems.get(itemId));
         todoItems.get(itemId).status = 'complete';
+
+        let completedTodoElement = listItem;
+        todoListElement.removeChild(completedTodoElement);
+        todoListElement.appendChild(completedTodoElement);
+
       } else {
         console.log(itemId);
         todoItems.get(itemId).status = 'not-complete';
       }
 
-      console.log('list', todoItems);
+      console.log('before sort', todoItems);
+      todoItems = new Map([...todoItems].sort((a, b) => {
+        /**
+         * > 0  sort a after b, e.g. [b, a]
+         * < 0  sort a before b, e.g. [a, b]
+         * === 0  keep original order of a and b
+         */
+        console.log('a', a);
+        console.log('b', b);
+        if (a[1].status === 'complete') {
+          return 1;
+        }
+        if (a[1].status === 'not-complete') {
+          return -1;
+        }
+        return 0;
+      }));
+      console.log('after sort', todoItems);
 
       saveTodoItemsToStorage();
       // TODO: Move completed tasks to the bottom of the list
@@ -112,32 +148,54 @@ const createNewListItem = (itemValue, itemId, itemStatus) => {
   });
 
   newListItem.querySelector('.delete-icon').addEventListener('click', () => {
-    // TODO: change icon to spinner and add respective classes
-    document.querySelector(`#${itemId}`).remove();
-    todoItems.delete(itemId);
-    saveTodoItemsToStorage();
+    listItem.classList.remove('complete', 'not-complete');
+    listItem.classList.add('spinner');
+    listItemIcon.classList.remove('fa-square', 'fa-check-square');
+    listItemIcon.classList.add('fa-spinner', 'fa-pulse');
+    setTimeout(() => {
+      document.querySelector(`#${itemId}`).remove();
+      todoItems.delete(itemId);
+      saveTodoItemsToStorage();
+    }, 1000);
   });
-
 
   i++;
 };
 
-const saveTodoItemsToStorage = () => {
-  console.log('saved');
-  if (todoItems.size > 0) {
-    localStorage.todoItems = JSON.stringify([...todoItems]);
+addBtn.addEventListener('click', event => {
+  event.preventDefault();
+
+  if (validateInputs()) {
+    createNewListItem(todoInput.value);
+    saveTodoItemsToStorage();
+    todoInput.value = '';
+  }
+});
+
+clearBtn.addEventListener('click', event => {
+  event.preventDefault();
+  todoInput.value = '';
+});
+
+/*// Options for the observer (which mutations to observe)
+const config = { attributes: true, childList: true, subtree: true };
+
+// Callback function to execute when mutations are observed
+const callback = (mutationList, observer) => {
+  for (const mutation of mutationList) {
+    if (mutation.type === "childList") {
+      console.log("A child node has been added or removed.");
+    } else if (mutation.type === "attributes") {
+      console.log(`The ${mutation.attributeName} attribute was modified.`);
+    }
   }
 };
 
-const getTodoItemsFromStorage = () => {
-  if (localStorage.todoItems) {
-    todoItems = new Map(JSON.parse(localStorage.todoItems));
-    return true;
-  } else {
-    todoItems = new Map();
-  }
-  return false;
-};
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(callback);
+
+// Start observing the target node for configured mutations
+observer.observe(todoListElement, config);*/
 
 /*
     TODO: Add some instructions to your README.md file around what your application is, how to run it, and how to use it.
