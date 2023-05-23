@@ -10,16 +10,25 @@
   margin-left: 0.3rem;
 }
 
-.todo-list li > span > i {
-  /*text-decoration-line: none !important;*/
+.todo-list li {
+  display: flex;
+  align-items: center;
+  margin: 0.1rem;
+  border: 1px solid transparent;
+}
+
+.todo-list li span.list-text {
+  flex-grow: 2;
 }
 
 .todo-list li:hover {
   cursor: pointer;
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
 }
 
 .todo-list li.spinner:hover {
   cursor: default !important;
+  box-shadow: none !important;
 }
 
 .todo-list li.spinner:hover > span.delete-icon {
@@ -27,9 +36,9 @@
 }
 
 .todo-list li:hover > span.delete-icon {
-  display: inline;
+  display: inline-flex;
 }
 
-.todo-list li.complete {
+.todo-list li.complete .list-text {
   text-decoration-line: line-through;
 }
