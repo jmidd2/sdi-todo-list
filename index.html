@@ -9,6 +9,40 @@
   <link rel="stylesheet" href="./main.css">
 </head>
 <body>
-
+<div class="container">
+  <section class="section">
+    <h1 class="title">The Best Todo List</h1>
+    <h2 class="subtitle">Add items to the list.</h2>
+  </section>
+  <section>
+    <div class="columns is-centered">
+      <article class="column is-half box mb-5">
+        <form>
+          <div class="field">
+            <label for="todo-item" class="label">New Task:</label>
+            <div class="control">
+              <input type="text" name="todo-item" id="todo-item" class="input">
+            </div>
+          </div>
+          <div class="field is-grouped is-grouped-centered">
+            <div class="control"><input type="button" value="Add" class="button is-link"></div>
+            <div class="control"><input type="button" value="Clear" class="button is-link"></div>
+          </div>
+        </form>
+      </article>
+    </div>
+    <div class="columns is-centered">
+      <article class="column is-half box">
+        <h2 class="title">Todo List:</h2>
+        <ul class="todo-list">
+          <li class="complete"><span class="icon"><i class="fas fa-check-square"></i></span>Item 1<span class="delete-icon icon has-text-danger"><i class="fas fa-trash"></i></span></li>
+          <li class="spinner"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span>Item 1<span class="delete-icon icon has-text-danger"><i class="fas fa-trash"></i></span></li>
+          <li><span class="icon"><i class="fas fa-square"></i></span>Item 1<span class="delete-icon icon has-text-danger"><i class="fas fa-trash"></i></span></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+</div>
+<script src="./index.js" type="text/javascript"></script>
 </body>
 </html>

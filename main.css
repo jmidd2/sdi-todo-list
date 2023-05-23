@@ -1,1 +1,35 @@
+@import "./fontawesome-free-6.4.0-web/css/all.css";
 @import "./bulma.css";
+
+.todo-list {
+  line-height: 1.6;
+}
+
+.todo-list li > span.delete-icon {
+  display: none;
+  margin-left: 0.3rem;
+}
+
+.todo-list li > span > i {
+  /*text-decoration-line: none !important;*/
+}
+
+.todo-list li:hover {
+  cursor: pointer;
+}
+
+.todo-list li.spinner:hover {
+  cursor: default !important;
+}
+
+.todo-list li.spinner:hover > span.delete-icon {
+  display: none !important;
+}
+
+.todo-list li:hover > span.delete-icon {
+  display: inline;
+}
+
+.todo-list li.complete {
+  text-decoration-line: line-through;
+}
