@@ -1,13 +1,18 @@
 @import "./fontawesome-free-6.4.0-web/css/all.css";
 @import "./bulma.css";
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 .todo-list {
   line-height: 1.6;
 }
 
 .todo-list li > span.delete-icon {
   display: none;
-  margin-left: 0.3rem;
+  margin-right: 0.5rem;
 }
 
 .todo-list li {
@@ -19,11 +24,12 @@
 
 .todo-list li span.list-text {
   flex-grow: 2;
+  margin-left: 0.2rem;
 }
 
 .todo-list li:hover {
   cursor: pointer;
-  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
 }
 
 .todo-list li.spinner:hover {
