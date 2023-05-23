@@ -17,6 +17,8 @@ const saveTodoItemsToStorage = () => {
   console.log('saved');
   if (todoItems.size > 0) {
     localStorage.todoItems = JSON.stringify([...todoItems]);
+  } else {
+    localStorage.todoItems = '';
   }
 };
 
@@ -26,6 +28,7 @@ const getTodoItemsFromStorage = () => {
     return true;
   } else {
     todoItems = new Map();
+    document.querySelector('.todos').classList.add('is-hidden');
   }
   return false;
 };
@@ -58,10 +61,12 @@ const validateInputs = () => {
   return false;
 };
 
-const removeValidationErrors = () => {
-  todoInput.classList.remove('is-danger');
-  helpElement.classList.remove('is-danger');
-  helpElement.innerHTML = '';
+const removeValidationErrors = (event) => {
+  if (!(event.key === 'Enter' || event.key === 'NumpadEnter')) {
+    todoInput.classList.remove('is-danger');
+    helpElement.classList.remove('is-danger');
+    helpElement.innerHTML = '';
+  }
 }
 
 const getNewItemId = (itemId) => {
@@ -123,15 +128,12 @@ const createNewListItem = (itemValue, itemId, itemStatus) => {
         todoItems.get(itemId).status = 'not-complete';
       }
 
-      console.log('before sort', todoItems);
-      todoItems = new Map([...todoItems].sort((a, b) => {
+      todoItems = new Map([...todoItems].sort((a) => {
         /**
          * > 0  sort a after b, e.g. [b, a]
          * < 0  sort a before b, e.g. [a, b]
          * === 0  keep original order of a and b
          */
-        console.log('a', a);
-        console.log('b', b);
         if (a[1].status === 'complete') {
           return 1;
         }
@@ -140,10 +142,8 @@ const createNewListItem = (itemValue, itemId, itemStatus) => {
         }
         return 0;
       }));
-      console.log('after sort', todoItems);
 
       saveTodoItemsToStorage();
-      // TODO: Move completed tasks to the bottom of the list
     }
   });
 
@@ -156,49 +156,35 @@ const createNewListItem = (itemValue, itemId, itemStatus) => {
       document.querySelector(`#${itemId}`).remove();
       todoItems.delete(itemId);
       saveTodoItemsToStorage();
+      if (todoItems.size === 0) {
+        document.querySelector('.todos').classList.add('is-hidden');
+      }
     }, 1000);
   });
 
   i++;
 };
 
-addBtn.addEventListener('click', event => {
+const addNewTodoCallback = (event) => {
   event.preventDefault();
 
   if (validateInputs()) {
+    document.querySelector('.todos').classList.remove('is-hidden');
     createNewListItem(todoInput.value);
     saveTodoItemsToStorage();
     todoInput.value = '';
   }
-});
+}
+
+addBtn.addEventListener('click', addNewTodoCallback);
+
+document.querySelector('form').addEventListener('submit', addNewTodoCallback);
 
 clearBtn.addEventListener('click', event => {
   event.preventDefault();
   todoInput.value = '';
 });
 
-/*// Options for the observer (which mutations to observe)
-const config = { attributes: true, childList: true, subtree: true };
-
-// Callback function to execute when mutations are observed
-const callback = (mutationList, observer) => {
-  for (const mutation of mutationList) {
-    if (mutation.type === "childList") {
-      console.log("A child node has been added or removed.");
-    } else if (mutation.type === "attributes") {
-      console.log(`The ${mutation.attributeName} attribute was modified.`);
-    }
-  }
-};
-
-// Create an observer instance linked to the callback function
-const observer = new MutationObserver(callback);
-
-// Start observing the target node for configured mutations
-observer.observe(todoListElement, config);*/
-
 /*
     TODO: Add some instructions to your README.md file around what your application is, how to run it, and how to use it.
-    TODO: Archive completed tasks in a viewable location on screen
-
  */
