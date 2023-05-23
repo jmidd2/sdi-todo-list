@@ -14,6 +14,7 @@ clearBtn.addEventListener('click', event => {
   todoInput.value = '';
 })
 addBtn.addEventListener('click', event => {
+  // TODO: Prevent adding if todoInput is blank and show error validation
   // TODO: Track todo in HashMap
   event.preventDefault();
   const newListItem = document.createElement('li');
@@ -21,6 +22,7 @@ addBtn.addEventListener('click', event => {
   let newId = `list-item-${i}`
   newListItem.id = newId;
   newListItem.innerHTML = newListItemInnerHtml;
+  // TODO: Add a function that takes in a string as input and adds it to the to-do list.
   newListItem.querySelector('.list-text').innerHTML = todoInput.value;
   document.querySelector('ul.todo-list').appendChild(newListItem);
 
@@ -30,6 +32,8 @@ addBtn.addEventListener('click', event => {
       document.querySelector(`#${newId}`).classList.toggle('complete');
       document.querySelector(`#${newId} .icon i`).classList.toggle('fa-square');
       document.querySelector(`#${newId} .icon i`).classList.toggle('fa-check-square');
+
+      // TODO: Move completed tasks to the bottom of the list
     }
   });
 
@@ -40,3 +44,10 @@ addBtn.addEventListener('click', event => {
 
   i++;
 });
+
+/*
+    TODO: Add some instructions to your README.md file around what your application is, how to run it, and how to use it.
+    TODO: Make the list persist through a refresh of the page by using local storage to store to-do's
+    TODO: Archive completed tasks in a viewable location on screen
+
+ */
